@@ -20,7 +20,7 @@ publish: default
 	GOOS=windows go build -o $(bin_folder)/windows-$(executable)
 
 run: default
-	./$(executable)
+	$(bin_folder)/$(executable)
 
 clean:
 	rm $(bin_folder)/*

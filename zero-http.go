@@ -18,37 +18,51 @@ func main() {
 	var done = make(chan bool)
 	signal.Notify(interrupt, os.Interrupt, syscall.SIGTERM)
 
-	var zeroServer = server.NewZeroServer(&configuration.Server)
+	var servers = []*server.ZeroServer{
+		server.NewServer(configuration.Http, configuration.ConfigDir),
+	}
 
-	// start our action
-	go func() {
-		log.Println("Starting Up")
+	if configuration.Https != nil {
+		servers = append(servers, server.NewServer(configuration.Https, configuration.ConfigDir))
+	}
 
-		if err := zeroServer.Start(); err != nil {
-			log.Fatalln("Failed to start the server: ", err)
-		}
+	// start our servers
+	log.Println("Starting Up")
+	for i := 0; i < len(servers); i++ {
+		var s = servers[i]
 
-		// tell our main thread to shutdown
-		done <- true
-	}()
+		go func() {
+			if err := s.Start(); err != nil {
+				log.Println("Failed to start the server: ", err)
+			}
+
+			// tell our main thread to shutdown
+			done <- true
+		}()
+	}
 
 	// listen for a shutdown
 	go func() {
 		<-interrupt
 		log.Println("Shutting Down (ctrl+c to force it)")
 
-		// don't let the action block shutdown
-		go func() {
-			zeroServer.Stop()
-		}()
+		for i := 0; i < len(servers); i++ {
+			var s = servers[i]
+			// don't let the server block shutdown
+			go func() {
+				s.Stop()
+			}()
+		}
 
 		// if we get another interrupt force a shutdown
 		<-interrupt
 		log.Fatalln("Shutdown forced")
 	}()
 
-	// wait until our action completes
-	<-done
+	// wait until our servers complete
+	for i := 0; i < len(servers); i++ {
+		<-done
+	}
 }
 
 func loadConfig() *config.Configuration {
@@ -75,6 +89,8 @@ func loadConfig() *config.Configuration {
 
 	var configFile = viper.ConfigFileUsed()
 	var configDir = path.Dir(configFile)
+
+	viper.Debug()
 
 	log.Println("Loaded config file:", configFile)
 

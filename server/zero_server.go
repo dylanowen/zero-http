@@ -5,19 +5,22 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"strconv"
 	"time"
 )
 
 type ZeroServer struct {
-	config *Config
+	config    *Config
+	configDir string
 
 	Server *http.Server
 }
 
-func NewZeroServer(config *Config) *ZeroServer {
+func NewServer(config *Config, configDir string) *ZeroServer {
 	return &ZeroServer{
-		config: config,
+		config:    config,
+		configDir: configDir,
 	}
 }
 
@@ -41,7 +44,18 @@ func (z *ZeroServer) Start() error {
 
 	log.Println("Starting server at localhost" + z.Server.Addr)
 
-	err = z.Server.ListenAndServe()
+	var certFile = z.config.CertFile
+	var keyFile = z.config.KeyFile
+
+	if len(certFile) > 0 && len(keyFile) > 0 {
+		certFile = path.Join(z.configDir, certFile)
+		keyFile = path.Join(z.configDir, keyFile)
+
+		err = z.Server.ListenAndServeTLS(certFile, keyFile)
+	} else {
+		err = z.Server.ListenAndServe()
+	}
+
 	// filter out errors from the server closing
 	if err == http.ErrServerClosed {
 		return nil

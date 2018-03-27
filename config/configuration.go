@@ -11,14 +11,16 @@ type Configuration struct {
 }
 
 type RawConfiguration struct {
-	Server server.Config
-	Debug  bool
+	Http  *server.Config
+	Https *server.Config
+	Debug bool
 }
 
 func getDefault() *RawConfiguration {
 	return &RawConfiguration{
-		Server: *server.DefaultConfig(),
-		Debug:  false,
+		Http:  server.DefaultConfig(),
+		Https:  nil,
+		Debug: false,
 	}
 }
 

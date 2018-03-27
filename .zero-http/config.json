@@ -1,5 +1,10 @@
 {
-  "server": {
+  "http": {
     "port": 8000
+  },
+  "https": {
+    "port": 8443,
+    "certFile": "zero-http.crt",
+    "keyFile": "zero-http.key"
   }
 }

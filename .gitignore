@@ -5,6 +5,10 @@
 *.dylib
 bin/zero-http
 
+# keys
+*.pem
+*.key
+
 # Test binary, build with `go test -c`
 *.test
 

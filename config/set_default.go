@@ -32,6 +32,7 @@ func setDefaultSlice(defaultConfig reflect.Value, v *viper.Viper, path string) {
 
 func setDefaultField(value reflect.Value, v *viper.Viper, path string) {
 	if value.Kind() == reflect.Invalid {
+		v.SetDefault(path, nil)
 		return
 	}
 
