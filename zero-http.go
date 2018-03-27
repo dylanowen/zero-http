@@ -22,7 +22,7 @@ func main() {
 		server.NewServer(configuration.Http, configuration.ConfigDir),
 	}
 
-	if configuration.Https != nil {
+	if configuration.Https != nil && configuration.Https.Port > 0 {
 		servers = append(servers, server.NewServer(configuration.Https, configuration.ConfigDir))
 	}
 
@@ -89,8 +89,6 @@ func loadConfig() *config.Configuration {
 
 	var configFile = viper.ConfigFileUsed()
 	var configDir = path.Dir(configFile)
-
-	viper.Debug()
 
 	log.Println("Loaded config file:", configFile)
 

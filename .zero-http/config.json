@@ -4,7 +4,7 @@
   },
   "https": {
     "port": 8443,
-    "certFile": "zero-http.crt",
+    "certFile": "zero-http.pem",
     "keyFile": "zero-http.key"
   }
 }

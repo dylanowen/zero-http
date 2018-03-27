@@ -19,7 +19,7 @@ type RawConfiguration struct {
 func getDefault() *RawConfiguration {
 	return &RawConfiguration{
 		Http:  server.DefaultConfig(),
-		Https:  nil,
+		Https: nil,
 		Debug: false,
 	}
 }
