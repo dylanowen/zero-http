@@ -5,10 +5,6 @@
 *.dylib
 bin/zero
 
-# config
-config.json
-tenants.json
-
 # Test binary, build with `go test -c`
 *.test
 
