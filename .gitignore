@@ -3,7 +3,7 @@
 *.dll
 *.so
 *.dylib
-bin/zero
+bin/zero-http
 
 # Test binary, build with `go test -c`
 *.test

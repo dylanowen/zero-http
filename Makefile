@@ -3,7 +3,7 @@ SHELL:=/bin/bash
 .DEFAULT_GOAL := default
 
 bin_folder = bin
-executable = zero
+executable = zero-http
 
 dependencies:
 	dep ensure
@@ -23,4 +23,4 @@ run: default
 	./$(executable)
 
 clean:
-	rm $(executable)
+	rm $(bin_folder)/*
