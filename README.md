@@ -6,4 +6,5 @@ This is a replacement for `python -m SimpleHTTPServer` or `python -m http.server
 It explicitly makes sure not to cache any results and probably some other things eventually
 
 ## Config
-It reads a `.zero-http` folder either from the working directory or `~/.zero-http` see the folder in the repo for a sample config.
+It reads a `.zero-http` folder either from the working directory or `~/.zero-http` see [this](.zero-http)
+folder for an example
