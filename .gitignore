@@ -3,7 +3,7 @@
 *.dll
 *.so
 *.dylib
-zero
+bin/zero
 
 # config
 config.json
