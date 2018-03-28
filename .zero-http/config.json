@@ -1,9 +1,9 @@
 {
   "http": {
-    "port": 8000
+    "port": 9000
   },
   "https": {
-    "port": 8443,
+    "port": 9443,
     "certFile": "zero-http.pem",
     "keyFile": "zero-http.key"
   }
