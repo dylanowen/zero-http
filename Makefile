@@ -11,7 +11,7 @@ dependencies:
 format:
 	go fmt ./...
 
-default: dependencies format
+default: format
 	go build -o $(bin_folder)/$(executable)
 
 publish: default

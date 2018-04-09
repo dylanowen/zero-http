@@ -1,14 +1,8 @@
 package server
 
 type Config struct {
-	Port int
+	Port string
 
 	CertFile string
 	KeyFile  string
-}
-
-func DefaultConfig() *Config {
-	return &Config{
-		Port: 8000,
-	}
 }

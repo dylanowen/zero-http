@@ -43,6 +43,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/phayes/freeport"
+  packages = ["."]
+  revision = "b8543db493a5ed890c5499e935e2cad7504f3a04"
+  version = "1.0.2"
+
+[[projects]]
   name = "github.com/spf13/afero"
   packages = [
     ".",
@@ -103,6 +109,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "eccb635f04da0f190548c53ecccf793147bdf07146ed2a8274d375f3b53b1dc4"
+  inputs-digest = "7b5f4df4748873411fc66bd822e93a330b871d8faade9e0271895ef09ac7eddd"
   solver-name = "gps-cdcl"
   solver-version = 1
