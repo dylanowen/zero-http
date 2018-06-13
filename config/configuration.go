@@ -13,6 +13,7 @@ type Configuration struct {
 }
 
 type RawConfiguration struct {
+	Host string
 	Port string
 
 	CertFile string
@@ -35,6 +36,7 @@ func (c *RawConfiguration) NewServerConfig(path string) *server.Config {
 
 	return &server.Config{
 		Port:     c.Port,
+		Host:     c.Host,
 		CertFile: certFile,
 		KeyFile:  keyFile,
 	}

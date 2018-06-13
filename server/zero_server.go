@@ -39,7 +39,7 @@ func (z *ZeroServer) Start() (err error) {
 
 	// create our server
 	z.Server = &http.Server{
-		Addr:    ":" + strconv.Itoa(port),
+		Addr:    z.getHost() + ":" + strconv.Itoa(port),
 		Handler: requestWrapper(handler),
 	}
 
@@ -68,13 +68,59 @@ func requestWrapper(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL)
 
-		// Don't cache anything
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-		w.Header().Set("Pragma", "no-cache")
-		w.Header().Set("Expires", "0")
+		if !handleOptions(w, r) {
+			// Don't cache anything
+			w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+			w.Header().Set("Pragma", "no-cache")
+			w.Header().Set("Expires", "0")
 
-		handler.ServeHTTP(w, r)
+			var origin = r.Header.Get("Origin")
+			if origin != "" {
+				// auto allow everything for CORS
+				w.Header().Set("Access-Control-Allow-Origin", origin)
+			}
+
+			handler.ServeHTTP(w, r)
+		}
 	})
+}
+
+const allowedMethods = "GET,OPTIONS"
+
+func handleOptions(w http.ResponseWriter, r *http.Request) bool {
+	if r.Method == "OPTIONS" {
+		var origin = r.Header.Get("Origin")
+		var requestMethod = r.Header.Get("Access-Control-Request-Method")
+
+		// This is a CORS request so respond appropriately
+		if origin != "" && requestMethod != "" {
+			w.Header().Set("Access-Control-Max-Age", "86400")
+			w.Header().Set("Access-Control-Allow-Methods", allowedMethods)
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+
+			var requestHeaders = r.Header.Get("Access-Control-Request-Headers")
+			if requestHeaders != "" {
+				w.Header().Set("Access-Control-Allow-Headers", requestHeaders)
+			}
+		}
+
+		w.Header().Set("Allow", allowedMethods)
+
+		return true
+	} else {
+		return false
+	}
+}
+
+func (z *ZeroServer) getHost() string {
+	var host = z.config.Host
+
+	// make the user explicitly choose 0.0.0.0 instead of auto binding
+	if host == "" {
+		host = "localhost"
+	}
+
+	return host
 }
 
 func (z *ZeroServer) findPort() (port int, err error) {
@@ -137,13 +183,13 @@ func (z *ZeroServer) listenAndServe() (err error) {
 }
 
 func (z *ZeroServer) serverHttp() error {
-	log.Println("Starting server at https://localhost" + z.Server.Addr)
+	log.Println("Starting server at https://" + z.Server.Addr)
 
 	return z.Server.ListenAndServe()
 }
 
 func (z *ZeroServer) serveHttps(certFile string, keyFile string) error {
-	log.Println("Starting server at http://localhost" + z.Server.Addr)
+	log.Println("Starting server at http://" + z.Server.Addr)
 
 	return z.Server.ListenAndServeTLS(certFile, keyFile)
 }
