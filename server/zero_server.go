@@ -33,7 +33,7 @@ func (z *ZeroServer) Start() (err error) {
 
 	// setup our handler
 	var handler *http.ServeMux
-	if handler, err = getHandler(); err != nil {
+	if handler, err = z.getHandler(); err != nil {
 		return err
 	}
 
@@ -140,7 +140,20 @@ func (z *ZeroServer) findPort() (port int, err error) {
 	return
 }
 
-func getHandler() (*http.ServeMux, error) {
+func (z *ZeroServer) getHandler() (*http.ServeMux, error) {
+	var prefix = z.config.BasePath
+	if prefix == "" {
+		prefix = "/"
+	}
+
+	// print some base path warnings
+	if prefix[0] != '/' {
+		log.Println("Expected leading slash for base path")
+	}
+	if len(prefix) > 1 && prefix[len(prefix)-1] == '/' {
+		log.Println("A trailing base path slash could cause unexpected results")
+	}
+
 	// get our current working directory
 	workingDirectory, err := os.Getwd()
 	if err != nil {
@@ -149,7 +162,7 @@ func getHandler() (*http.ServeMux, error) {
 
 	var handler = http.NewServeMux()
 
-	handler.Handle("/", http.StripPrefix("/", http.FileServer(http.Dir(workingDirectory))))
+	handler.Handle("/", http.StripPrefix(prefix, http.FileServer(http.Dir(workingDirectory))))
 
 	return handler, nil
 }
@@ -183,13 +196,13 @@ func (z *ZeroServer) listenAndServe() (err error) {
 }
 
 func (z *ZeroServer) serverHttp() error {
-	log.Println("Starting server at https://" + z.Server.Addr)
+	log.Println("Starting server at http://" + z.Server.Addr)
 
 	return z.Server.ListenAndServe()
 }
 
 func (z *ZeroServer) serveHttps(certFile string, keyFile string) error {
-	log.Println("Starting server at http://" + z.Server.Addr)
+	log.Println("Starting server at https://" + z.Server.Addr)
 
 	return z.Server.ListenAndServeTLS(certFile, keyFile)
 }

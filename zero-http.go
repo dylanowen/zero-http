@@ -53,8 +53,9 @@ func main() {
 func loadConfig() *config.Configuration {
 	// bind all the command line arguments
 	pflag.String("port", "", "The port to use")
-	pflag.String("certFile", "", "the certFile to use for TLS")
-	pflag.String("keyFile", "", "the keyFile to use for TLS")
+	pflag.String("basePath", "", "The base path to serve the site from")
+	pflag.String("certFile", "", "The certFile to use for TLS")
+	pflag.String("keyFile", "", "The keyFile to use for TLS")
 	pflag.Parse()
 	viper.BindPFlags(pflag.CommandLine)
 
