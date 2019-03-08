@@ -24,7 +24,7 @@ publish-linux:
 	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $(executable)
 
 docker: format
-	docker build -t dylanowen/zero-http .
+	docker build -t dylanowen/zero-http -f docker/Dockerfile .
 
 run: default
 	$(bin_folder)/$(executable)
