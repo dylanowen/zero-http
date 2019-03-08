@@ -28,7 +28,7 @@ VOLUME ["$SRV_HOME"]
 
 # setup our volumes for configuration
 RUN mkdir -p $CONFIG_HOME
-ADD docker/default-config.json $CONFIG_HOME/config.json
+COPY --from=build-env $BUILD_HOME/docker/default-config.json $CONFIG_HOME/config.json
 
 VOLUME ["$CONFIG_HOME"]
 
@@ -48,3 +48,5 @@ USER zero
 
 WORKDIR $SRV_HOME
 EXPOSE 9000
+
+ENTRYPOINT ["zero-http"]
