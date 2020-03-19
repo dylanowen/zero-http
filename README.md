@@ -11,7 +11,7 @@ folder for an example
 
 ## Docker
 
-`docker run -it -p 9443:9443 -v $(pwd)/config:/zero/.zero-http -v $(pwd):/zero/srv dylanowen/zero-http:latest zero-http`
+`docker run -it -p 9000:9000 -v $(pwd)/config:/zero/.zero-http -v $(pwd):/zero/srv dylanowen/zero-http:latest zero-http`
 
 ### docker-compose.yml
 ```yaml
@@ -23,10 +23,10 @@ services:
     - $PWD:/zero/srv
     - $PWD/config:/zero/.zero-http
     ports:
-    - 9443:9443
+    - 9000:9000
     command: zero-http
 ```
 
 ### Publish
-`make docker`
+`make docker`  
 `docker push dylanowen/zero-http:latest`
